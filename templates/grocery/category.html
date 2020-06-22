@@ -1,0 +1,121 @@
+{% extends 'grocery/base.html' %}
+{% load static %}
+{% block extra_head %}
+    <style>
+    img{
+        height: 100%;
+        max-width: 100%;
+    }
+    .men-thumb-item {
+    height: 155px;
+    text-align: center;
+    }
+    .item-info-product {
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
+    text-align: center;
+}
+    </style>
+
+{% endblock %}
+
+{% block main_contents %}
+	<div class="page-head_agile_info_w3l">
+
+	</div>
+	<!-- //banner-2 -->
+	<!-- page -->
+	<div class="services-breadcrumb">
+		<div class="agile_inner_breadcrumb">
+			<div class="container">
+				<ul class="w3_short">
+					<li>
+						<a href="index.html">Home</a>
+						<i>|</i>
+					</li>
+					<li>{{ category }}</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!-- //page -->
+	<!-- top Products -->
+	<div class="ads-grid">
+		<div class="container">
+			<!-- tittle heading -->
+			<h3 class="tittle-w3l">{{ category }}
+				<span class="heading-style">
+					<i></i>
+					<i></i>
+					<i></i>
+				</span>
+			</h3>
+			<!-- //tittle heading -->
+                {% include  'grocery/left-section.html'%}
+			<!-- product right -->
+			<div class="agileinfo-ads-display col-md-9 w3l-rightpro">
+				<div class="wrapper">
+                    <!-- first section -->
+					<div class="product-sec1">
+                        {% for item in items %}
+                            <div class="col-md-4 product-men">
+                    <div class="men-pro-item simpleCart_shelfItem">
+                        <div class="men-thumb-item">
+                            <img src="{{ item.image.url }}" alt="">
+                            <div class="men-cart-pro">
+                                <div class="inner-men-cart-pro">
+                                    <a href="{{ item.get_absolute_url }}" class="link-product-add-cart">Quick View</a>
+                                </div>
+                            </div>
+                            <span class="product-new-top">New</span>
+                        </div>
+                        <div class="item-info-product ">
+                            <h4>
+                                <a href="{{ item.get_absolute_url }}">{{ item.title }}</a>
+                            </h4>
+                            <div class="info-product-price">
+                                {% if item.discount_price %}
+
+                                    <span class="item_price">${{ item.discount_price }}</span>
+                                    <del>{{ item.price }}</del>
+                                {% else %}
+                                    {{ item.price }}
+                                {% endif %}
+
+                            </div>
+                            <div class="snipcart-details top_brand_home_details item_add single-item hvr-outline-out">
+{#                                <input type="submit" name="submit" value="Add to cart" class="button" />#}
+                                <div class="rating1">
+                                    <span class="starRating">
+                                        <input id="rating5" type="radio" name="rating" value="5" {% if item.ratting == 5.0 %} checked="" {% endif %}>
+                                        <label for="rating5">5</label>
+                                        <input id="rating4" type="radio" name="rating" value="4" {% if item.ratting == 4.0 %} checked="" {% endif %}>
+                                        <label for="rating4">4</label>
+                                        <input id="rating3" type="radio" name="rating" value="3" {% if item.ratting == 3.0 %} checked="" {% endif %}>
+                                        <label for="rating3">3</label>
+                                        <input id="rating2" type="radio" name="rating" value="2" {% if item.ratting == 2.0 %} checked="" {% endif %}>
+                                        <label for="rating2">2</label>
+                                        <input id="rating1" type="radio" name="rating" value="1" {% if item.ratting == 1.0 %} checked="" {% endif %}>
+                                        <label for="rating1">1</label>
+                                    </span>
+				                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                        {% endfor %}
+						<div class="clearfix"></div>
+					</div>
+					<!-- //first section -->
+
+				</div>
+			</div>
+			<!-- //product right -->
+		</div>
+	</div>
+	<!-- //top products -->
+	{% block feature_container %}
+        {% include 'grocery/featured-section.html' %}
+    {% endblock feature_container %}
+{% endblock main_contents %}

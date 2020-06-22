@@ -4,11 +4,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView, View
+from django.views.generic import DetailView, View
 from django.shortcuts import redirect
 from django.utils import timezone
-from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
+from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm, VendorSignupForm
 from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile
+from allauth.account.views import SignupView
 
 import random
 import string
@@ -65,7 +66,8 @@ class CheckoutView(View):
                 context.update(
                     {'default_billing_address': billing_address_qs[0]})
 
-            return render(self.request, "checkout.html", context)
+            # return render(self.request, "checkout.html", context)
+            return render(self.request, "grocery/payment.html", context)
         except ObjectDoesNotExist:
             messages.info(self.request, "You do not have an active order")
             return redirect("core:checkout")
@@ -343,10 +345,23 @@ class PaymentView(View):
         return redirect("/payment/stripe/")
 
 
-class HomeView(ListView):
-    model = Item
-    paginate_by = 10
-    template_name = "home.html"
+class HomeView(View):
+    def get(self, *args, **kwargs):
+        CATEGORY_CHOICES = (
+            ('C', 'Cat'),
+            ('D', 'Dog'),
+            ('P', 'Parrot')
+        )
+        items = Item.objects.all()
+        catagory_count = items.values_list('category',flat=True).distinct()
+        context = {
+            "items": items,
+            "category_count" : catagory_count,
+            "categorys":CATEGORY_CHOICES
+        }
+        return render(self.request, "grocery/index.html",context=context)
+    # template_name = "home.html"
+    template_name = "grocery/index.html"
 
 
 class OrderSummaryView(LoginRequiredMixin, View):
@@ -356,7 +371,8 @@ class OrderSummaryView(LoginRequiredMixin, View):
             context = {
                 'object': order
             }
-            return render(self.request, 'order_summary.html', context)
+            return render(self.request, 'grocery/checkout.html', context)
+            # return render(self.request, 'order_summary.html', context)
         except ObjectDoesNotExist:
             messages.warning(self.request, "You do not have an active order")
             return redirect("/")
@@ -364,7 +380,8 @@ class OrderSummaryView(LoginRequiredMixin, View):
 
 class ItemDetailView(DetailView):
     model = Item
-    template_name = "product.html"
+    # template_name = "product.html"
+    template_name = "grocery/product.html"
 
 
 @login_required
@@ -515,3 +532,36 @@ class RequestRefundView(View):
             except ObjectDoesNotExist:
                 messages.info(self.request, "This order does not exist.")
                 return redirect("core:request-refund")
+
+class CategoryView(View):
+    def get(self, *args, **kwargs):
+        CATEGORY_CHOICES = (
+            ('C', 'cat'),
+            ('D', 'dog'),
+            ('P', 'parrot')
+        )
+        slug = self.kwargs['slug'].lower()
+        category = [key for key, value in dict(CATEGORY_CHOICES).items() if value == slug]
+        items = Item.objects.filter(category=category[0])
+        context = {
+            "category": slug,
+            "items": items,
+        }
+        return render(self.request, "grocery/category.html",context=context)
+    # template_name = "home.html"
+
+class VendorUserSignupView(SignupView):
+    # The referenced HTML content can be copied from the signup.html
+    # in the django-allauth template folder
+    template_name = 'account/signup.html'
+    # the previously created form class
+    form_class = VendorSignupForm
+
+    # the view is created just a few lines below
+    # N.B: use the same name or it will blow up
+    view_name = 'company_signup'
+
+    # I don't use them, but you could override them
+    # (N.B: the following values are the default)
+    # success_url = None
+    # redirect_field_name = 'next'

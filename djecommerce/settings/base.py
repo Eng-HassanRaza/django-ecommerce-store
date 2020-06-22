@@ -18,6 +18,9 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+
+    'allauth.socialaccount.providers.facebook',
+
     'crispy_forms',
     'django_countries',
 
@@ -53,7 +56,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'djecommerce.wsgi.application'
-
+# ACCOUNT_FORMS = {'signup': 'core.forms.MyCustomSignupForm'}
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
@@ -74,7 +77,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend'
 )
-SITE_ID = 1
+SITE_ID = 2
 LOGIN_REDIRECT_URL = '/'
 
 # CRISPY FORMS

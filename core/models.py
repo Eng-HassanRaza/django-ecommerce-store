@@ -7,9 +7,9 @@ from django_countries.fields import CountryField
 
 
 CATEGORY_CHOICES = (
-    ('S', 'Shirt'),
-    ('SW', 'Sport wear'),
-    ('OW', 'Outwear')
+    ('C', 'Cat'),
+    ('D', 'Dog'),
+    ('P', 'Parrot')
 )
 
 LABEL_CHOICES = (
@@ -33,10 +33,16 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+class VendorProfile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    shop_name = models.CharField(max_length=50, null=False, blank=False)
+
 
 class Item(models.Model):
     title = models.CharField(max_length=100)
     price = models.FloatField()
+    ratting = models.FloatField(default=0)
     discount_price = models.FloatField(blank=True, null=True)
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
     label = models.CharField(choices=LABEL_CHOICES, max_length=1)

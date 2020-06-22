@@ -4,8 +4,18 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1']
 
 INSTALLED_APPS += [
-    'debug_toolbar'
+    'debug_toolbar',
+    'fcm_django',
+    'push_notifications'
 ]
+
+PUSH_NOTIFICATIONS_SETTINGS = {
+        "FCM_API_KEY": "AAAAP-ISdnI:APA91bGc_D_sTTZrlfO6sgqQOiAYt7_KuXipDW64fdCLIPIV1wnQnvg9j5mpCH5COmrT1IQ6VMq3uF6XqHMuMnRgm9x9VdkchTuu2BKhbOfoRECkW__afMi24L90IllKXAChtZOiugfB",
+        "APNS_CERTIFICATE": os.path.join(BASE_DIR, "public_key.pem"),
+        "APNS_TOPIC": "127.0.0.1",
+        "WP_PRIVATE_KEY": os.path.join(BASE_DIR, "private_key.pem"),
+        "WP_CLAIMS": {"sub": "mailto: development@example.com"}
+}
 
 MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware', ]
 

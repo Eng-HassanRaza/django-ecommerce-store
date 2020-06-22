@@ -2,11 +2,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from core.views import VendorUserSignupView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),
-    path('', include('core.urls', namespace='core'))
+    path('accounts/', include('allauth.urls'),name='accounts'),
+    path('', include('core.urls', namespace='core')),
+    path(
+        'accounts/signup/company/$', VendorUserSignupView.as_view(), name='signup-company'
+    ),
 ]
 
 if settings.DEBUG:
